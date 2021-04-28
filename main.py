@@ -1,8 +1,8 @@
 import tkinter as tk
 import random
 import time
-#from numpy import random
 
+array = random.sample(range(248), 248)
 #lines = []  # holds line height
 canvasids = []  # holds ids of lines made
 lines = random.sample(range(1, 251), 250)
@@ -26,6 +26,10 @@ InsertionSort = tk.Button(window, text="insertion", command=lambda: insertionSor
 InsertionSort.pack()
 MergeSort = tk.Button(window, text="merge", command=lambda: mergeSort(lines))
 MergeSort.pack()
+QuickSort = tk.Button(window, text="quick", command=lambda: quicksort(lines, 0, len(lines)-1))
+QuickSort.pack()
+HeapSort = tk.Button(window, text="heap", command=lambda: heapsort(lines))
+HeapSort.pack()
 delete = tk.Button(window, text= "delete", command=lambda: deleteLines())
 delete.pack()
 
@@ -154,5 +158,95 @@ def mergeSort(arr):
             # window.after(1)
             window.update()
     print(arr)
+
+
+def partition(array, start, end):
+    global canvasids
+    pivot = array[start]
+    low = start + 1
+    high = end
+
+    while True:
+        # If the current value we're looking at is larger than the pivot
+        # it's in the right place (right side of pivot) and we can move left,
+        # to the next element.
+        # We also need to make sure we haven't surpassed the low pointer, since that
+        # indicates we have already moved all the elements to their correct side of the pivot
+        while low <= high and array[high] >= pivot:
+            high = high - 1
+
+        # Opposite process of the one above
+        while low <= high and array[low] <= pivot:
+            low = low + 1
+
+        # We either found a value for both high and low that is out of order
+        # or low is higher than high, in which case we exit the loop
+        if low <= high:
+            array[low], array[high] = array[high], array[low]
+            canvas.delete(canvasids[low])
+            canvas.delete(canvasids[high])
+            canvasids[low] = canvas.create_line(low, 250, low, 250 - lines[low])
+            canvasids[high] = canvas.create_line(high, 250, high, 250 - lines[high])
+            window.after(1)
+            window.update()
+            # The loop continues
+        else:
+            # We exit out of the loop
+            break
+
+    array[start], array[high] = array[high], array[start]
+    canvas.delete(canvasids[start])
+    canvas.delete(canvasids[high])
+    canvasids[start] = canvas.create_line(start, 250, start, 250 - lines[start])
+    canvasids[high] = canvas.create_line(high, 250, high, 250 - lines[high])
+    window.after(1)
+    window.update()
+    return high
+
+
+def quicksort(array, start, end):
+    if start >= end:
+        return
+
+    p = partition(array, start, end)
+    quicksort(array, start, p-1)
+    quicksort(array, p+1, end)
+
+
+def heapify(arr, n, i):
+    global canvasids
+    largest = i
+    l = 2 * i + 1
+    r = 2 * i + 2
+    if l < n and arr[largest] < arr[l]:
+        largest = l
+    if r < n and arr[largest] < arr[r]:
+        largest = r
+    if largest != i:
+        arr[i], arr[largest] = arr[largest], arr[i]
+        canvas.delete(canvasids[i])
+        canvas.delete(canvasids[largest])
+        canvasids[i] = canvas.create_line(i, 250, i, 250 - lines[i])
+        canvasids[largest] = canvas.create_line(largest, 250, largest, 250 - lines[largest])
+        window.after(1)
+        window.update()
+        heapify(arr, n, largest)
+
+
+def heapsort(arr):
+    global canvasids
+    n = len(arr)
+    for i in range(n//2 - 1, -1, -1):
+        heapify(arr, n, i)
+    for i in range(n-1, 0, -1):
+        arr[i], arr[0] = arr[0], arr[i]
+        canvas.delete(canvasids[i])
+        canvas.delete(canvasids[0])
+        canvasids[i] = canvas.create_line(i, 250, i, 250 - lines[i])
+        canvasids[0] = canvas.create_line(0, 250, 0, 250 - lines[0])
+        window.after(1)
+        window.update()
+        heapify(arr, i, 0)
+
 
 window.mainloop()
