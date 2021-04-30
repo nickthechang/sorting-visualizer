@@ -30,6 +30,8 @@ QuickSort = tk.Button(window, text="quick", command=lambda: quicksort(lines, 0, 
 QuickSort.pack()
 HeapSort = tk.Button(window, text="heap", command=lambda: heapsort(lines))
 HeapSort.pack()
+CountSort = tk.Button(window, text="count", command=lambda: countsort(lines, 250))
+CountSort.pack()
 delete = tk.Button(window, text= "delete", command=lambda: deleteLines())
 delete.pack()
 
@@ -248,5 +250,21 @@ def heapsort(arr):
         window.update()
         heapify(arr, i, 0)
 
+
+def countsort(arr, max_val):
+    m = max_val + 1
+    count = [0] * m
+    for a in arr:
+        count[a] += 1
+    i=0
+    for a in range(m):
+        for c in range(count[a]):
+            arr[i] = a
+            canvas.delete(canvasids[i])
+            canvasids[i] = canvas.create_line(i, 250, i, 250 - a)
+            window.after(1)
+            window.update()
+            i += 1
+    return arr
 
 window.mainloop()
