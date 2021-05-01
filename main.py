@@ -24,8 +24,10 @@ SelectionSort = tk.Button(window, text="selection", command=lambda: selectionSor
 SelectionSort.pack()
 InsertionSort = tk.Button(window, text="insertion", command=lambda: insertionSort())
 InsertionSort.pack()
-MergeSort = tk.Button(window, text="merge", command=lambda: mergeSort(lines))
+MergeSort = tk.Button(window, text="merge", command=lambda: mergeSort(lines, 0, len(lines) -1))
 MergeSort.pack()
+RadixSort = tk.Button(window, text="radix", command=lambda: radixSort(lines))
+RadixSort.pack()
 delete = tk.Button(window, text= "delete", command=lambda: deleteLines())
 delete.pack()
 
@@ -101,58 +103,111 @@ def insertionSort():
         lines[j + 1] = key
 
 
-def mergeSort(arr):
-    #global lines
-    if len(arr) > 1:
-        mid = len(arr) // 2
-        L = arr[:mid]
-        R = arr[mid:]
-        mergeSort(L)
-        mergeSort(R)
-        i = j = k = 0
-        while i < len(L) and j < len(R):
-            if L[i] < R[j]:
-                arr[k] = L[i]
-                i += 1
-                #canvas.delete(canvasids[k])
-                #canvas.delete(canvasids[i])
-                #canvasids[i] = canvas.create_line(i, 250, i, 250 - arr[i])
-                #canvasids[k] = canvas.create_line(k, 250, k, 250 - arr[k])
-                # window.after(1)
-                window.update()
-            else:
-                arr[k] = R[j]
-                j += 1
-                #canvas.delete(canvasids[k])
-                #canvas.delete(canvasids[j])
-                #canvasids[j] = canvas.create_line(j, 250, j, 250 - arr[i])
-                #canvasids[k] = canvas.create_line(k, 250, k, 250 - arr[k])
-                # window.after(1)
-                window.update()
-            k += 1
+#Radix Sort
+def countingSort(arr, exp1):
+    n = len(arr)
+    output = [0] * (n)
+    count = [0] * (10)
 
-        while i < len(L):
-            arr[k] = L[i]
-            i += 1
-            k += 1
-            #canvas.delete(canvasids[k])
-            #canvas.delete(canvasids[i])
-            #canvasids[i] = canvas.create_line(i, 250, i, 250 - arr[i])
-            #canvasids[k] = canvas.create_line(k, 250, k, 250 - arr[k])
-            # window.after(1)
+    for i in range(0, n):
+        index = (arr[i] / exp1)
+        count[int(index % 10)] += 1
+
+    for i in range(1, 10):
+        count[i] += count[i - 1]
+
+    i = n - 1
+    while i >= 0:
+        index = (arr[i] / exp1)
+        output[count[int(index % 10)] - 1] = arr[i]
+        count[int(index % 10)] -= 1
+        i -= 1
+
+    i = 0
+    for i in range(0, len(arr)):
+        arr[i] = output[i]
+        canvas.delete(canvasids[i])
+        canvasids[i] = canvas.create_line(i, 250, i, 250 - arr[i])
+        window.after(1)
+        window.update()
+
+
+# Method to do Radix Sort
+def radixSort(arr):
+    max1 = max(arr)
+    exp = 1
+    while max1 / exp > 0:
+        countingSort(arr, exp)
+        exp *= 10
+
+#MergeSort
+
+
+def merge(array, left_index, right_index, middle):
+    left_copy = array[left_index:middle + 1]
+    right_copy = array[middle+1:right_index+1]
+
+    left_copy_index = 0
+    right_copy_index = 0
+    sorted_index = left_index
+
+    while left_copy_index < len(left_copy) and right_copy_index < len(right_copy):
+        if left_copy[left_copy_index] <= right_copy[right_copy_index]:
+            array[sorted_index] = left_copy[left_copy_index]
+            canvas.delete(canvasids[sorted_index])
+            #canvas.delete(canvasids[left_copy_index])
+            canvasids[sorted_index] = canvas.create_line(sorted_index, 250, sorted_index, 250 - lines[sorted_index])
+            #canvasids[left_copy_index] = canvas.create_line(left_copy_index, 250, left_copy_index, 250 - lines[left_copy_index])
+            window.after(1)
             window.update()
-
-
-        while j < len(R):
-            arr[k] = R[j]
-            j += 1
-            k += 1
-            #canvas.delete(canvasids[k])
-            #canvas.delete(canvasids[j])
-            #canvasids[j] = canvas.create_line(j, 250, j, 250 - arr[i])
-            #canvasids[k] = canvas.create_line(k, 250, k, 250 - arr[k])
-            # window.after(1)
+            left_copy_index = left_copy_index + 1
+        else:
+            array[sorted_index] = right_copy[right_copy_index]
+            canvas.delete(canvasids[sorted_index])
+            #canvas.delete(canvasids[left_copy_index])
+            canvasids[sorted_index] = canvas.create_line(sorted_index, 250, sorted_index, 250 - lines[sorted_index])
+            #canvasids[right_copy_index] = canvas.create_line(right_copy_index, 250, right_copy_index, 250 - lines[right_copy_index])
+            window.after(1)
             window.update()
-    print(arr)
+            right_copy_index = right_copy_index + 1
+        sorted_index = sorted_index + 1
+
+    while left_copy_index < len(left_copy):
+        array[sorted_index] = left_copy[left_copy_index]
+        canvas.delete(canvasids[sorted_index])
+        # canvas.delete(canvasids[left_copy_index])
+        canvasids[sorted_index] = canvas.create_line(sorted_index, 250, sorted_index, 250 - lines[sorted_index])
+        # canvasids[left_copy_index] = canvas.create_line(left_copy_index, 250, left_copy_index, 250 - lines[left_copy_index])
+        window.after(1)
+        window.update()
+        left_copy_index = left_copy_index + 1
+        sorted_index = sorted_index + 1
+
+    while right_copy_index < len(right_copy):
+        array[sorted_index] = right_copy[right_copy_index]
+        canvas.delete(canvasids[sorted_index])
+        # canvas.delete(canvasids[left_copy_index])
+        canvasids[sorted_index] = canvas.create_line(sorted_index, 250, sorted_index, 250 - lines[sorted_index])
+        # canvasids[right_copy_index] = canvas.create_line(right_copy_index, 250, right_copy_index, 250 - lines[right_copy_index])
+        window.after(1)
+        window.update()
+        right_copy_index = right_copy_index + 1
+        sorted_index = sorted_index + 1
+
+def mergeSort(array, left_index, right_index):
+    if left_index >= right_index:
+        return
+
+    middle = (left_index + right_index)//2
+    mergeSort(array, left_index, middle)
+    mergeSort(array, middle + 1, right_index)
+    merge(array, left_index, right_index, middle)
+
+#mergeSort(lines, 0, len(lines) -1)
+#print(lines)
+#merge_sort(lines, 0, len(lines)-1)
+
+
+
 
 window.mainloop()
