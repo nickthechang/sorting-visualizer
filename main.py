@@ -1,6 +1,8 @@
 import tkinter as tk
+#from tkinter import *
+
 import random
-import time
+#import time
 
 array = random.sample(range(248), 248)
 #lines = []  # holds line height
@@ -9,33 +11,37 @@ lines = random.sample(range(1, 251), 250)
 #lines = random.sample(range(200), 200)
 
 window = tk.Tk()
-window.geometry("500x500")
+window.geometry("500x250")
 canvas = tk.Canvas(window, bg="white",height=250, width=250)
+#window.resizable(False, False)
 canvas.pack()
 #lines.pack()
 
 
 
 makeArray = tk.Button(window, text="make array", command=lambda: makeline(xaxis))
-makeArray.pack()
+makeArray.place( x =30, y = 10, anchor = "nw")
+#makeArray.pack()
 BubbleSort = tk.Button(window, text="bubbles", command=lambda: bubbleSort())
-BubbleSort.pack()
+BubbleSort.place(relx = 1, x =-30, y = 10, anchor = "ne")
+#BubbleSort.pack()
 SelectionSort = tk.Button(window, text="selection", command=lambda: selectionSort())
-SelectionSort.pack()
+SelectionSort.place(relx = 1, x =-30, y = 40, anchor = "ne")
 InsertionSort = tk.Button(window, text="insertion", command=lambda: insertionSort())
-InsertionSort.pack()
+InsertionSort.place(relx = 1, x =-30, y = 70, anchor = "ne")
 MergeSort = tk.Button(window, text="merge", command=lambda: mergeSort(lines, 0, len(lines) -1))
-MergeSort.pack()
+MergeSort.place(relx = 1, x =-30, y = 100, anchor = "ne")
 RadixSort = tk.Button(window, text="radix", command=lambda: radixSort(lines))
-RadixSort.pack()
+RadixSort.place(relx = 1, x =-30, y = 130, anchor = "ne")
 QuickSort = tk.Button(window, text="quick", command=lambda: quicksort(lines, 0, len(lines)-1))
-QuickSort.pack()
+QuickSort.place(relx = 1, x =-30, y = 160, anchor = "ne")
 HeapSort = tk.Button(window, text="heap", command=lambda: heapsort(lines))
-HeapSort.pack()
+HeapSort.place(relx = 1, x =-30, y = 190, anchor = "ne")
 CountSort = tk.Button(window, text="count", command=lambda: countsort(lines, 250))
-CountSort.pack()
+CountSort.place(relx = 1, x =-30, y = 220, anchor = "ne")
 delete = tk.Button(window, text= "delete", command=lambda: deleteLines())
-delete.pack()
+delete.place( x =30, y = 40, anchor = "nw")
+#delete.pack()
 
 
 xaxis = 0
@@ -73,8 +79,18 @@ def bubbleSort():
                 canvas.delete(canvasids[j])
                 canvas.delete(canvasids[j+1])
                 canvasids[j] = canvas.create_line(j, 250, j, 250-lines[j])
+                canvas.itemconfig(canvasids[j], fill="red")
+                window.update()
+
+                window.update()
                 canvasids[j+1] = canvas.create_line(1 + j, 250, 1 + j, 250-lines[j+1])
-                #window.after(1)
+                canvas.itemconfig(canvasids[j+1], fill="red")
+                window.update()
+
+                window.after(1)
+                window.update()
+                canvas.itemconfig(canvasids[j], fill="black")
+                canvas.itemconfig(canvasids[j + 1], fill="black")
                 window.update()
 
 def selectionSort():
@@ -87,8 +103,15 @@ def selectionSort():
         canvas.delete(canvasids[i])
         canvas.delete(canvasids[min_idx])
         canvasids[i] = canvas.create_line(i, 250, i, 250 - lines[i])
+        canvas.itemconfig(canvasids[i], fill="red")
+        window.update()
         canvasids[min_idx] = canvas.create_line(min_idx, 250, min_idx, 250 - lines[min_idx])
+        canvas.itemconfig(canvasids[min_idx], fill="red")
+        window.update()
         window.after(1)
+        window.update()
+        canvas.itemconfig(canvasids[i], fill="black")
+        canvas.itemconfig(canvasids[min_idx], fill="black")
         window.update()
 
 
@@ -102,8 +125,15 @@ def insertionSort():
             canvas.delete(canvasids[j])
             canvas.delete(canvasids[j + 1])
             canvasids[j] = canvas.create_line(j, 250, j, 250 - lines[j])
+            canvas.itemconfig(canvasids[j], fill="red")
+            window.update()
             canvasids[j + 1] = canvas.create_line(1 + j, 250, 1 + j, 250 - lines[j + 1])
-            #window.after(1)
+            canvas.itemconfig(canvasids[j+1], fill="red")
+            window.update()
+            window.after(1)
+            window.update()
+            canvas.itemconfig(canvasids[j], fill="black")
+            canvas.itemconfig(canvasids[j+1], fill="black")
             window.update()
             j -= 1
         lines[j + 1] = key
@@ -134,7 +164,11 @@ def countingSort(arr, exp1):
         arr[i] = output[i]
         canvas.delete(canvasids[i])
         canvasids[i] = canvas.create_line(i, 250, i, 250 - arr[i])
+        canvas.itemconfig(canvasids[i], fill="red")
+        window.update()
         window.after(1)
+        window.update()
+        canvas.itemconfig(canvasids[i], fill="black")
         window.update()
 
 
