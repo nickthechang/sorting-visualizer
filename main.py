@@ -87,7 +87,7 @@ def bubbleSort():
                 canvas.itemconfig(canvasids[j+1], fill="red")
                 window.update()
 
-                window.after(1)
+                #window.after(1)
                 window.update()
                 canvas.itemconfig(canvasids[j], fill="black")
                 canvas.itemconfig(canvasids[j + 1], fill="black")
